@@ -1,5 +1,7 @@
 
-/Debug/*
+/Debug/Core/*
+/Debug/Drivers*
+!makefile
 
 # Object files
 *.o
