@@ -54,8 +54,8 @@ all: main-build
 main-build: Travis_CI_Test_f103rb.elf secondary-outputs
 
 # Tool invocations
-Travis_CI_Test_f103rb.elf: $(OBJS) $(USER_OBJS) ../STM32F103RBTX_FLASH.ld
-	arm-none-eabi-gcc -o "Travis_CI_Test_f103rb.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"../STM32F103RBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Travis_CI_Test_f103rb.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Travis_CI_Test_f103rb.elf: $(OBJS) $(USER_OBJS) C:\Users\simon\Documents\STM32\cubeide\Travis_CI_Test_f103rb\STM32F103RBTX_FLASH.ld
+	arm-none-eabi-gcc -o "Travis_CI_Test_f103rb.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"C:\Users\simon\Documents\STM32\cubeide\Travis_CI_Test_f103rb\STM32F103RBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Travis_CI_Test_f103rb.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
