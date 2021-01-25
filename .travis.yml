@@ -30,7 +30,7 @@ install:
 before_script:
   - echo -e "ARM GCC Compiler Version:\n"
   - arm-none-eabi-gcc --version
+  - cd $TRAVIS_BUILD_DIR/Debug/
 
 script:
-  - cd $TRAVIS_BUILD_DIR/Debug/
   - make all
