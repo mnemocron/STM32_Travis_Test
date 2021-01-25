@@ -15,11 +15,7 @@ for line in rf:
 				nln = arg[0].split('C:')[0] + '../' +  arg[-1]
 	if(len(pattern) > 1):
 		line = line.replace(pattern, nln)
-<<<<<<< HEAD
 	temp += line
-=======
-	temp += line + '\n'
->>>>>>> 5538bb480bebe983ebe5b2147e90e6cc4d02eccf
 rf.close()
 
 os.remove(makefile)
