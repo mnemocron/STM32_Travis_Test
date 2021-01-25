@@ -23,6 +23,8 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <stdio.h>
+#include "scpi/scpi.h"          // SCPI Library
+#include "scpi-def.h"           // SCPI User Code
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -43,7 +45,7 @@
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
-
+extern   scpi_t scpi_context;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -66,7 +68,29 @@ static void MX_USART2_UART_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+size_t SCPI_Write(scpi_t * context, const char * data, size_t len){
+	(void) context;
+	return fwrite(data, 1, len, stdout);
+}
 
+int SCPI_Error(scpi_t * context, int_fast16_t err){
+	return 0;
+}
+
+scpi_result_t SCPI_Control(scpi_t * context, scpi_ctrl_name_t ctrl, scpi_reg_val_t val){
+	(void) context;
+	return SCPI_RES_OK;
+}
+
+scpi_result_t SCPI_Reset(scpi_t * context){
+	// reset ADCs etc.
+	return SCPI_RES_OK;
+}
+
+scpi_result_t SCPI_Flush(scpi_t * context){
+	(void) context;
+	return SCPI_RES_OK;
+}
 /* USER CODE END 0 */
 
 /**
@@ -99,6 +123,17 @@ int main(void)
   MX_GPIO_Init();
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
+  printf("booting...");
+  SCPI_Init(&scpi_context,
+   	scpi_commands,
+   	&scpi_interface,
+   	scpi_units_def,
+   	SCPI_IDN1, SCPI_IDN2, SCPI_IDN3, SCPI_IDN4,
+   	(char*)&scpi_input_buffer, SCPI_INPUT_BUFFER_LENGTH,
+   	scpi_error_queue_data, SCPI_ERROR_QUEUE_SIZE);
+
+  __HAL_UART_ENABLE_IT(&huart2, UART_IT_RXNE);  // must be enabled again
+  printf("Done!\n");
 
   /* USER CODE END 2 */
 
@@ -109,8 +144,10 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	  printf("foo\n");
-	  HAL_Delay(1000);
+	// printf("foo\n");
+	HAL_Delay(500);
+	HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
+
   }
   /* USER CODE END 3 */
 }

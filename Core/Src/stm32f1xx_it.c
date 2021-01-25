@@ -23,6 +23,8 @@
 #include "stm32f1xx_it.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "scpi/scpi.h"
+#include "scpi-def.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -42,7 +44,7 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
-
+char rx;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -58,7 +60,7 @@
 /* External variables --------------------------------------------------------*/
 extern UART_HandleTypeDef huart2;
 /* USER CODE BEGIN EV */
-
+extern scpi_t scpi_context;
 /* USER CODE END EV */
 
 /******************************************************************************/
@@ -205,10 +207,21 @@ void SysTick_Handler(void)
 void USART2_IRQHandler(void)
 {
   /* USER CODE BEGIN USART2_IRQn 0 */
+	/**
+	* @note USART (SCPI) Interface Rx Interrupt
+	* this function is executed for each byte/char entering the USART3 Bus
+	* the char can be directly forwarded to the SCPI_Input()
+	* the SCPI library has a buffer and automatically detects complete command sequences
+	*/
+	//if(__HAL_UART_GET_IT_SOURCE(&huart2, UART_IT_RXNE) == SET){
+		HAL_UART_Receive_IT(&huart2, (uint8_t*)&rx, 1);  // receive the single char in non-blocking mode
+		SCPI_Input(&scpi_context, &rx, 1);
+	//}
 
   /* USER CODE END USART2_IRQn 0 */
   HAL_UART_IRQHandler(&huart2);
   /* USER CODE BEGIN USART2_IRQn 1 */
+  __HAL_UART_ENABLE_IT(&huart2, UART_IT_RXNE);  // must be enabled again
 
   /* USER CODE END USART2_IRQn 1 */
 }
